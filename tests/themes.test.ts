@@ -3,6 +3,12 @@ import { expect, test } from 'claude-code/testing'
 import { fileOf, withoutOurs } from '../hooks/register'
 import { THEMES, parseUserTheme, tile } from '../hooks/themes'
 import { sceneModule } from '../tools/assemble.mjs'
+import type { CommandRunInput } from 'claude-code'
+
+// The engine's inputs carry more fields than these tests use (origin, presentation, the band's scroll and view):
+// give only the ones the mod reads
+const THEMES_CMD = { command: 'themes', args: '' } as CommandRunInput
+const PROPS = { hasSurvey: false, isCollapsed: false, isWorking: false, maxRows: 40, columns: 100, bodyColumns: 100 } as never
 
 test('a person\'s own theme is read as a simple theme, and a bad one is refused', async () => {
   const good = parseUserTheme(JSON.stringify({ id: 'my-dusk', name: 'My Dusk', tagline: 't', bg: '#112233', text: '#eeeeee',
@@ -22,10 +28,10 @@ test('a person\'s own theme is read as a simple theme, and a bad one is refused'
 test('every theme has a tile the desktop takes, and Claude writes no colors', async () => {
   for (const t of THEMES) expect(tile(t, true).length < 131072).toBe(true)
   expect(fileOf(THEMES[0]!)).toBe('{}')
-  const sunset = JSON.parse(fileOf(THEMES[1]!, 'html{}'))
-  expect(sunset.accent).toBe('#ff8a6b')
-  expect(sunset.css).toBe('html{}')
-  expect(sunset.vars['cds-radius']).toBe('10px')
+  const sakura = JSON.parse(fileOf(THEMES[1]!, 'html{}'))
+  expect(sakura.accent).toBe('#f08fae')
+  expect(sakura.css).toBe('html{}')
+  expect(sakura.vars['cds-radius']).toBe('14px')
   const look = JSON.parse(fileOf(THEMES[1]!, '', { motion: 'grid', speed: 2, cell: 14, veil: .6 }))
   expect(look.motion).toBe('grid')
   expect(look.speed).toBe(2)
@@ -53,18 +59,18 @@ test('the strip above the prompt shows only once opened, a button per theme, and
     if (restarted && e.path.endsWith('manifest.json')) return { value: '{"content_scripts":[{"js":["theme.js"]}]}' }
     throw new Error('ENOENT')
   })
-  const props = { hasSurvey: false, isWorking: false, maxRows: 40, columns: 100 }
+  const props = PROPS
   const shut = await $.ui.mount({ plugin: 'themes-for-claude', surface: 'desktop', component: 'AbovePrompt', props })
   expect(await shut.find({ key: 'close' })).toBeUndefined()
   await shut.unmount()
-  await $.command.run({ command: 'themes' })
+  await $.command.run(THEMES_CMD)
   const bare = await $.ui.mount({ plugin: 'themes-for-claude', surface: 'desktop', component: 'AbovePrompt', props })
   expect(await bare.find({ key: 'install' })).toBeDefined()
   for (const t of THEMES) expect(await bare.find({ key: `use-${t.id}` })).toBeUndefined()
   await bare.unmount()
   restarted = true
-  await $.command.run({ command: 'themes' })
-  await $.command.run({ command: 'themes' })
+  await $.command.run(THEMES_CMD)
+  await $.command.run(THEMES_CMD)
   const ui = await $.ui.mount({ plugin: 'themes-for-claude', surface: 'desktop', component: 'AbovePrompt', props })
   expect(await ui.find({ key: 'install' })).toBeUndefined()
   expect(await ui.find({ key: 'remove' })).toBeDefined()
@@ -84,7 +90,7 @@ test('on Windows the strip installs into the Claude-Data folder in use, else int
   const disk = new Map<string, string>()
   on('env.get', ($, e) => ({ value: ({ APPDATA: 'C:\\Roaming', LOCALAPPDATA: 'C:\\Local' } as Record<string, string>)[e.name] }))
   on('fs.exists', ($, e) => ({ value: e.path === data || (inUse && e.path === `${data}\\claude_x\\Local State`) || disk.has(e.path) }))
-  on('fs.list', ($, e) => ({ value: e.path === data ? [{ kind: 'directory', name: 'claude_x', size: 0, mtimeMs: 0 }] : [] }))
+  on('fs.list', ($, e) => ({ value: e.path === data ? [{ kind: 'dir', name: 'claude_x', size: 0, mtimeMs: 0, isLink: false }] : [] }))
   on('fs.write', ($, e) => { disk.set(e.path, e.text); return { value: undefined } })
   on('fs.read', ($, e) => {
     if (disk.has(e.path)) return { value: disk.get(e.path)! }
@@ -95,20 +101,20 @@ test('on Windows the strip installs into the Claude-Data folder in use, else int
     throw new Error('ENOENT')
   })
   on('process.run', () => ({ value: { exitCode: 0, stdout: '', stderr: '', isStdoutTruncated: false, isStderrTruncated: false } }))
-  const props = { hasSurvey: false, isWorking: false, maxRows: 40, columns: 100 }
+  const props = PROPS
   const install = async () => {
     const ui = await $.ui.mount({ plugin: 'themes-for-claude', surface: 'desktop', component: 'AbovePrompt', props })
     await ui.press({ key: 'install' })
     await ui.unmount()
   }
 
-  await $.command.run({ command: 'themes' })
+  await $.command.run(THEMES_CMD)
   await install()
   expect(disk.has(`${data}\\claude_x\\${id}\\theme.js`)).toBe(true)
   inUse = false
   // (closed and opened again: the check sees no extension in the other folder, so Install is back)
-  await $.command.run({ command: 'themes' })
-  await $.command.run({ command: 'themes' })
+  await $.command.run(THEMES_CMD)
+  await $.command.run(THEMES_CMD)
   await install()
   expect(disk.has(`C:\\Roaming\\Claude\\${id}\\theme.js`)).toBe(true)
 })
@@ -139,9 +145,9 @@ test('on macOS the strip installs into Application Support and sets REACT_PROFIL
     runs.push([...e.argv])
     return { value: { exitCode: 0, stdout: '', stderr: '', isStdoutTruncated: false, isStderrTruncated: false } }
   })
-  const props = { hasSurvey: false, isWorking: false, maxRows: 40, columns: 100 }
+  const props = PROPS
 
-  await $.command.run({ command: 'themes' })
+  await $.command.run(THEMES_CMD)
   const bare = await $.ui.mount({ plugin: 'themes-for-claude', surface: 'desktop', component: 'AbovePrompt', props })
   await bare.press({ key: 'install' })
   await bare.unmount()
@@ -151,7 +157,7 @@ test('on macOS the strip installs into Application Support and sets REACT_PROFIL
   expect(runs).toContainEqual(['launchctl', 'setenv', 'REACT_PROFILE', '1'])
 
   const ui = await $.ui.mount({ plugin: 'themes-for-claude', surface: 'desktop', component: 'AbovePrompt', props })
-  expect((await ui.find({ type: 'Text', text: /Cmd\+Q/ }))?.text).toMatch(/Quit Claude Desktop fully \(Cmd\+Q\)/)
+  expect((await ui.find({ type: 'Text', text: /Cmd\+Q/ }))?.text).toMatch(/完全退出 Claude Desktop（Cmd\+Q）/)
   await ui.press({ key: 'remove' })
   await ui.unmount()
   expect(runs).toContainEqual(['launchctl', 'unsetenv', 'REACT_PROFILE'])
