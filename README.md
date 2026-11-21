@@ -4,26 +4,16 @@ Themes for Claude Desktop, applied live. Pick one from a strip above the prompt 
 
 [![Switching themes with /themes in Claude Desktop](docs/demo.gif)](https://github.com/user-attachments/assets/32f4bfa8-eecc-4993-8b02-3a0960ac27c3)
 
-## Live ASCII wallpapers
+## Sakura Night
 
-An animated scene, drawn in characters, moves behind the chat. You can set its motion (smooth or cell by cell), its
-speed, its cell size and a backdrop behind the chat that keeps the text easy to read.
+This fork ships one theme: Sakura Night. A dark plum palette over a softened illustration, petals drifting down,
+round corners, a frosted chat box and a gentle bounce. Claude's own colors stay as the way back. It is based on
+upstream 0.7.3, with the strip and messages in Chinese.
 
-| | | |
-|:-:|:-:|:-:|
-| <img src="docs/moonlit.gif" alt="Moonlit"><br>**Moonlit** | <img src="docs/clawd.gif" alt="Clawd"><br>**Clawd** | <img src="docs/cloud-drift.gif" alt="Cloud Drift"><br>**Cloud Drift** |
-| <img src="docs/honu-lagoon.gif" alt="Honu Lagoon"><br>**Honu Lagoon** | <img src="docs/koi-pond.gif" alt="Koi Pond"><br>**Koi Pond** | <img src="docs/jellyfish.gif" alt="Jellyfish"><br>**Jellyfish** |
-| <img src="docs/lantern-night.gif" alt="Lantern Night"><br>**Lantern Night** | <img src="docs/fireflies.gif" alt="Fireflies"><br>**Fireflies** | <img src="docs/neon-rain.gif" alt="Neon Rain"><br>**Neon Rain** |
-| <img src="docs/sakura-dusk.gif" alt="Sakura Dusk"><br>**Sakura Dusk** | <img src="docs/snow-cabin.gif" alt="Snow Cabin"><br>**Snow Cabin** | <img src="docs/star-voyage.gif" alt="Star Voyage"><br>**Star Voyage** |
+<img src="docs/sakura-night.jpg" width="480" alt="Sakura Night">
 
-## Color themes
-
-Each theme changes colors, fonts, corner shapes and shadows. Some react to tool calls: a glow while a tool runs, a
-shake on an error.
-
-| | | | | |
-|:-:|:-:|:-:|:-:|:-:|
-| <img src="docs/sunset-cloud.svg" width="160" alt="Sunset Cloud"><br>**Sunset Cloud** | <img src="docs/sakura.svg" width="160" alt="Sakura"><br>**Sakura** | <img src="docs/terminal.svg" width="160" alt="Terminal"><br>**Terminal** | <img src="docs/night-sea.svg" width="160" alt="Night Sea"><br>**Night Sea** | <img src="docs/old-paper.svg" width="160" alt="Old Paper"><br>**Old Paper** |
+The background illustration is not mine and is used here for personal use only. Your own themes and live wallpapers
+still go in your themes folder (see below) and show under **Your themes**.
 
 ## Make your own
 

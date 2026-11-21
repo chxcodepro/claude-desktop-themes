@@ -11,10 +11,10 @@ const SLOT = ['extensions', 'fmkadmapgofadopljbjfkapdkoienihi']
 const MAC_SUPPORT = ['Library', 'Application Support']
 // macOS: what sets REACT_PROFILE=1 again at each login (launchctl setenv lasts until a restart)
 const AGENT = 'com.github.0toshigami.themes-for-claude'
-const QUIT = { windows: 'also from the tray', macos: 'Cmd+Q' } as const
+const QUIT = { windows: '托盘里的图标也要退出', macos: 'Cmd+Q' } as const
 const BY_HAND = {
-  windows: 'Set the user environment variable REACT_PROFILE=1 by hand',
-  macos: 'Run launchctl setenv REACT_PROFILE 1 in Terminal',
+  windows: '手动添加用户环境变量 REACT_PROFILE=1',
+  macos: '在终端里运行 launchctl setenv REACT_PROFILE 1',
 } as const
 const current = atom({ plugin: 'themes-for-claude', key: 'current' } as const, 'claude')
 // missing: no extension; restart: copied, but Claude Desktop has not loaded it yet
@@ -24,11 +24,11 @@ type Motion = 'smooth' | 'grid'
 type Look = { motion: Motion; speed: number; cell: number; veil: number }
 const LOOK: Look = { motion: 'grid', speed: 4, cell: 14, veil: .4 }
 const motion = atom({ plugin: 'themes-for-claude', key: 'motion' } as const, LOOK.motion)
-const MOTIONS: Record<Motion, string> = { smooth: 'Smooth', grid: 'Cell by cell' }
+const MOTIONS: Record<Motion, string> = { smooth: '平滑', grid: '逐格' }
 const speed = atom({ plugin: 'themes-for-claude', key: 'speed' } as const, LOOK.speed)
 const SPEEDS = [1, 2, 4, 8, 16]
 const cell = atom({ plugin: 'themes-for-claude', key: 'cell' } as const, LOOK.cell)
-const CELLS: Record<number, string> = { 14: 'Small', 18: 'Medium', 22: 'Large' }
+const CELLS: Record<number, string> = { 14: '小', 18: '中', 22: '大' }
 const veil = atom({ plugin: 'themes-for-claude', key: 'veil' } as const, LOOK.veil)
 const VEILS = [0, .2, .4, .6, .8]
 const isStripOpen = atom({ plugin: 'themes-for-claude', key: 'isStripOpen' } as const, false)
@@ -180,7 +180,7 @@ const rebuild = async ($: EngineInterface) => {
   if ((await now('theme.js')) === js && JSON.stringify(JSON.parse(await now('manifest.json'))) === JSON.stringify(JSON.parse(manifest))) return
   await $.fs.write(join(dir, 'theme.js'), js)
   await $.fs.write(join(dir, 'manifest.json'), manifest)
-  $.ui.toast('The extension is updated. Restart Claude Desktop to see the changes.')
+  $.ui.toast('扩展已更新，重启 Claude Desktop 后生效。')
 }
 
 // REACT_PROFILE=1 for the apps started from now on, and after the next login
@@ -204,7 +204,7 @@ const install = async ($: EngineInterface) => {
   const host = await hostOf($)
   const dir = await slot($)
   if (!host || !dir) {
-    $.ui.toast('Only Windows and macOS are supported for now.')
+    $.ui.toast('目前只支持 Windows 和 macOS。')
     return
   }
   await $.fs.write(join(dir, 'theme.js'), await build($))
@@ -214,8 +214,8 @@ const install = async ($: EngineInterface) => {
   const exitCode = await setProfile($, host)
   await update($, setup, () => 'restart')
   $.ui.toast(exitCode === 0
-    ? `Installed. Quit Claude Desktop fully (${QUIT[host.os]}) and open it again to use the themes.`
-    : 'The extension is copied, but REACT_PROFILE=1 could not be set.')
+    ? `已安装。完全退出 Claude Desktop（${QUIT[host.os]}），再重新打开就能用主题了。`
+    : '扩展已复制，但没能设置 REACT_PROFILE=1。')
 }
 
 type Manifest = { content_scripts?: { js?: string[] }[]; web_accessible_resources?: { resources?: string[] }[] }
@@ -261,8 +261,8 @@ const remove = async ($: EngineInterface) => {
   await update($, current, () => 'claude')
   $.ui.status(undefined)
   $.ui.toast(exitCode === 0
-    ? 'Extension removed. Restart Claude Desktop; then you can uninstall the plugin.'
-    : `Could not remove every file. Delete them by hand in ${dir}`)
+    ? '扩展已移除。重启 Claude Desktop 后，就可以卸载这个插件了。'
+    : `有些文件没删掉，请到 ${dir} 手动删除`)
 }
 
 const pick = async ($: EngineInterface, t: Theme) => {
@@ -278,7 +278,7 @@ const pick = async ($: EngineInterface, t: Theme) => {
     own ? `scenes/${t.id}.js?v=${sceneAt[t.id]}` : undefined))
   await update($, current, () => t.id)
   $.ui.status(statusOf(t, 'idle'))
-  $.ui.toast(`Theme: ${t.name}`)
+  $.ui.toast(`主题：${t.name}`)
 }
 
 const after = (list: number[], v: number) => list[(list.indexOf(v) + 1) % list.length] ?? v
@@ -295,7 +295,7 @@ const nextLook = async ($: EngineInterface, which: 'motion' | 'speed' | 'cell' |
 export const register: Register = on => {
   on('session.start', async ($, e, next) => {
     // (not /theme: Claude Code has its own)
-    await $.command.register({ name: 'themes', description: 'Pick a theme for Claude Desktop' })
+    await $.command.register({ name: 'themes', description: '为 Claude Desktop 选择主题' })
     try {
       await loadMine($).catch(() => {})
       const dir = await slot($)
@@ -315,7 +315,7 @@ export const register: Register = on => {
     await loadMine($).catch(() => {})
     await rebuild($).catch(() => {})
     const open = await update($, isStripOpen, o => !o)
-    return { text: open ? 'Theme strip opened above the prompt.' : 'Theme strip closed.' }
+    return { text: open ? '主题栏已在输入框上方打开。' : '主题栏已关闭。' }
   })
 
   on('ui.render', { component: 'AbovePrompt' }, async ($, e, next) => {
@@ -337,7 +337,7 @@ export const register: Register = on => {
         <Box flexDirection="row" flexWrap="wrap" gap={1}>
           {themes.map(t => (
             <Box key={`tile-${t.id}`} flexDirection="column" alignItems="center" gap="xs">
-              {Svg ? <Svg source={tile(t, t.id === now)} alt={`Preview of ${t.name}`} width={120} /> : null}
+              {Svg ? <Svg source={tile(t, t.id === now)} alt={`${t.name} 预览`} width={120} /> : null}
               <Button key={`use-${t.id}`} label={t.id === now ? `✓ ${t.name}` : t.name} dimColor={t.id !== now}
                 onPress={() => pick($, t)} />            </Box>
           ))}
@@ -348,45 +348,45 @@ export const register: Register = on => {
       <Box flexDirection="column" gap={1} paddingX={1}>
         <Box flexDirection="row" alignItems="center" justifyContent="space-between">
           <Text>
-            <Text weight="semibold">Themes</Text>
-            <Text dimColor>{`  ·  ${worn.name}: ${worn.tagline}`}</Text>
+            <Text weight="semibold">主题</Text>
+            <Text dimColor>{`  ·  ${worn.name}：${worn.tagline}`}</Text>
           </Text>
           <Box flexDirection="row" gap={1}>
             {stage === 'missing' ? null
-              : <Button key="remove" label="Remove extension" dimColor onPress={() => remove($)} />}
-            <Button key="close" role="dismiss" label="Close" onPress={() => update($, isStripOpen, () => false)} />
+              : <Button key="remove" label="移除扩展" dimColor onPress={() => remove($)} />}
+            <Button key="close" role="dismiss" label="关闭" onPress={() => update($, isStripOpen, () => false)} />
           </Box>
         </Box>
         {stage === 'missing' ? (
           <Box key="notice" flexDirection="column" gap="xs" padding={1} borderStyle="round" borderColor="warning">
-            <Text color="warning" weight="semibold">One step first: install the extension</Text>
-            <Text>It paints the themes on Claude Desktop. After it is installed, restart Claude Desktop.</Text>
+            <Text color="warning" weight="semibold">先做一步：安装扩展</Text>
+            <Text>主题靠这个扩展画到 Claude Desktop 上。装好后重启 Claude Desktop。</Text>
             <Box flexDirection="row">
-              <Button key="install" label="Install extension" variant="primary" onPress={() => install($)} />
+              <Button key="install" label="安装扩展" variant="primary" onPress={() => install($)} />
             </Box>
           </Box>
         ) : stage === 'restart' ? (
           <Box key="notice" flexDirection="column" gap="xs" padding={1} borderStyle="round" borderColor="success">
-            <Text color="success" weight="semibold">Installed. Now restart Claude Desktop</Text>
-            <Text>{`Quit Claude Desktop fully (${QUIT[os]}), open it again, then type /themes.`}</Text>
-            <Text dimColor>{`Still here after a restart? ${BY_HAND[os]}, then restart again.`}</Text>
+            <Text color="success" weight="semibold">已安装，请重启 Claude Desktop</Text>
+            <Text>{`完全退出 Claude Desktop（${QUIT[os]}），重新打开后输入 /themes。`}</Text>
+            <Text dimColor>{`重启后还停在这一步？${BY_HAND[os]}，然后再重启一次。`}</Text>
           </Box>
         ) : worn.wallpaper && (
           <Box flexDirection="row" gap={1} alignItems="center" flexWrap="wrap">
-            <Text dimColor>Wallpaper:</Text>
-            <Text dimColor>motion</Text>
+            <Text dimColor>壁纸：</Text>
+            <Text dimColor>动效</Text>
             <Button key="motion" label={MOTIONS[move]} onPress={() => nextLook($, 'motion')} />
-            <Text dimColor>speed</Text>
+            <Text dimColor>速度</Text>
             <Button key="speed" label={`${pace}×`} onPress={() => nextLook($, 'speed')} />
-            <Text dimColor>size</Text>
+            <Text dimColor>大小</Text>
             <Button key="cell" label={CELLS[size]} onPress={() => nextLook($, 'cell')} />
-            <Text dimColor>chat backdrop</Text>
-            <Button key="veil" label={shade ? `${Math.round(shade * 100)}%` : 'Off'} onPress={() => nextLook($, 'veil')} />
+            <Text dimColor>聊天区遮罩</Text>
+            <Button key="veil" label={shade ? `${Math.round(shade * 100)}%` : '关'} onPress={() => nextLook($, 'veil')} />
           </Box>
         )}
-        {stage === 'ready' ? row('Live wallpapers', THEMES.filter(t => t.wallpaper)) : null}
-        {stage === 'ready' ? row('Color themes', THEMES.filter(t => !t.wallpaper)) : null}
-        {stage === 'ready' && mine.length ? row('Your themes', mine) : null}
+        {stage === 'ready' && THEMES.some(t => t.wallpaper) ? row('动态壁纸', THEMES.filter(t => t.wallpaper)) : null}
+        {stage === 'ready' ? row('配色主题', THEMES.filter(t => !t.wallpaper)) : null}
+        {stage === 'ready' && mine.length ? row('我的主题', mine) : null}
       </Box>
     )
   })
