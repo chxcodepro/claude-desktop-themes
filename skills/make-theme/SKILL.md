@@ -127,7 +127,7 @@ Do not change the mod's own files: the theme belongs to the person, not to the m
 The theme's stylesheet goes on Claude's logged-in page, so the extension refuses a stylesheet that loads anything:
 no `@import`, no `url()` except `data:`, no backslashes (write the character itself), no `image-set()`.
 Look at `themes/*.css` in the mod for the parts a theme can style:
-- `[data-cds=AssistantMessage]`, `[data-cds=UserMessage]`, `[data-cds=ChatComposer] > .bg-surface-3`, `.dframe-sidebar`.
+- `[data-cds=AssistantMessage]`, `[data-cds=UserMessage]`, `[data-cds=ChatComposer] > [data-cds-part=composer-card]`, `.dframe-sidebar`.
 - The start page: `[data-testid=start-card-clawd]`. Every built-in theme decorates it: tint or animate the Clawd
   (`> *`), draw a motif beside him (`::before`), and add a short greeting line (`::after`). Give a simple theme a
   stylesheet with this, even when it styles nothing else. See the end of `themes/sakura-night.css`.

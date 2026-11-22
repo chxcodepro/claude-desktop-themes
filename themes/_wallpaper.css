@@ -22,7 +22,7 @@ html[data-theme-state=waiting] body::after { opacity: 1; }
 }
 @keyframes wall-breathe { from { opacity: .35; } to { opacity: 1; } }
 
-[data-cds=ChatComposer] > .bg-surface-3 {
+[data-cds=ChatComposer] > [data-cds-part=composer-card] {
   background: var(--wall-glass) !important; backdrop-filter: blur(10px);
   box-shadow: inset 0 0 0 1px var(--wall-rim) !important;
 }
@@ -34,7 +34,7 @@ html[data-theme-state=waiting] body::after { opacity: 1; }
   background: var(--wall-glass) !important; backdrop-filter: blur(14px);
   box-shadow: inset 1px 0 0 var(--wall-rim);
 }
-[data-cds=ChatComposer] > .bg-surface-3:focus-within { box-shadow: inset 0 0 0 1.5px var(--cds-text-accent) !important; }
+[data-cds=ChatComposer] > [data-cds-part=composer-card]:focus-within { box-shadow: inset 0 0 0 1.5px var(--cds-text-accent) !important; }
 
 [data-testid=start-card-clawd] > * { filter: drop-shadow(0 0 8px var(--wall-rim)); }
 [data-testid=start-card-clawd]::after {

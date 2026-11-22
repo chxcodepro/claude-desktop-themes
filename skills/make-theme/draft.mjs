@@ -49,7 +49,7 @@ writeFileSync(need('out'), `<!doctype html>
   [data-cds=AssistantMessage] code { background: var(--cds-surface-3); padding: 1px 5px; border-radius: 4px; }
   [data-cds=AssistantMessage] a { color: var(--cds-text-accent); }
   [data-cds=ChatComposer] { position: absolute; bottom: 34px; width: min(640px, 86%); }
-  .bg-surface-3 { background: var(--cds-surface-3); border-radius: var(--cds-radius-composer, 20px); padding: 14px 16px;
+  [data-cds-part=composer-card] { background: var(--cds-surface-3); border-radius: var(--cds-radius-composer, 20px); padding: 14px 16px;
     display: flex; justify-content: space-between; align-items: center; color: var(--cds-text-muted); box-shadow: var(--cds-shadow-md, none); }
   .send { width: 28px; height: 28px; border-radius: 50%; background: var(--cds-fill-accent); }
   .status { position: absolute; bottom: 8px; font-size: 12px; color: var(--cds-text-muted); }
@@ -64,7 +64,7 @@ writeFileSync(need('out'), `<!doctype html>
       <p>Writing stays easy to read, <code>code</code> stands out, and the accent marks what you can press.</p>
     </div>
   </div>
-  <div data-cds="ChatComposer"><div class="bg-surface-3">Describe a task or ask a question<span class="send"></span></div></div>
+  <div data-cds="ChatComposer"><div data-cds-part="composer-card">Describe a task or ask a question<span class="send"></span></div></div>
   <div class="status">${esc(status)}</div>
 </div>
 ${boot}

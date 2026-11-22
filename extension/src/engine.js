@@ -2,7 +2,7 @@ let SIDE = 0;
 const DIM = .25, column = () => {
   SIDE = Math.round((document.querySelector('.dframe-sidebar')?.getBoundingClientRect().right ?? 0) / CELL);
   if (!document.querySelector('[data-cds=AssistantMessage]')) return;
-  const r = document.querySelector('[data-cds=ChatComposer] > .bg-surface-3')?.getBoundingClientRect();
+  const r = document.querySelector('[data-cds=ChatComposer] > [data-cds-part=composer-card]')?.getBoundingClientRect();
   return r?.width ? [r.left, r.right] : undefined;
 };
 const keep = (col, px) => {

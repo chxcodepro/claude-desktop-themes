@@ -1,7 +1,7 @@
 {
   "name": "themes-for-claude",
   "displayName": "Claude Desktop Themes",
-  "version": "0.7.3-sakura.1",
+  "version": "0.7.3-sakura.2",
   "description": "Sakura Night for Claude Desktop, with the theme strip in Chinese, picked with /themes; the make-theme skill makes your own",
   "author": { "name": "0toshigami", "url": "https://github.com/0toshigami/claude-desktop-themes" },
   "homepage": "https://github.com/chxcodepro/claude-desktop-themes",
