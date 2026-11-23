@@ -65,6 +65,26 @@ const varsOf = t => {
   return vars;
 };
 
+// Claude draws its generated widgets (show_widget) in frames from claudemcpcontent.com, coloured by --color-*
+// variables the page's css cannot reach. In such a frame, or one inside it, theme.js only asks the page for the
+// theme's widget css and puts that in; every other frame it leaves alone
+const WIDGETS = /^https:\/\/([a-z0-9-]+\.)*claudemcpcontent\.com$/, ASK = 'themes-for-claude:ask', GIVE = 'themes-for-claude:widget';
+if (window !== top) {
+  if ([location.origin, ...Array.from(location.ancestorOrigins ?? [])].some(o => WIDGETS.test(o))) {
+    const style = document.createElement('style');
+    style.id = 'desktop-theme-widget';
+    addEventListener('message', e => {
+      const css = e.source === top && e.data && typeof e.data === 'object' ? e.data[GIVE] : undefined;
+      if (typeof css !== 'string' || (css && !safe(css))) return;
+      style.textContent = css;
+      if (css) (document.head ?? root).append(style); // (again each time: last, after the widget's own sheets)
+      else style.remove();
+    });
+    top.postMessage({ [ASK]: true }, '*');
+  }
+  return;
+}
+
 let mode;
 // (not every data-mode: data-mode=code means something else)
 const MODES = '[data-mode=light],[data-mode=dark],[data-mode=system]';

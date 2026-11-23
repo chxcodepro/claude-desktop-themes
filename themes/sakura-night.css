@@ -132,3 +132,12 @@ html[data-theme-state=waiting] body::after {
   -webkit-backdrop-filter: blur(10px) saturate(1.1); backdrop-filter: blur(10px) saturate(1.1);
   box-shadow: inset 0 0 0 1px rgba(240, 143, 174, .22), inset 0 1px 0 rgba(255, 255, 255, .05) !important;
 }
+
+/* Claude's generated widgets (show_widget) sit in a frame with a clear ground: frost it like the composer, so the
+   widget's own cards (coloured by sakura-night.widget.css, inside the frame) float on plum glass */
+iframe[src*="claudemcpcontent.com/"] {
+  color-scheme: dark; /* (the same as the widget's own, or Chrome lays an opaque ground under the frame) */
+  background: rgba(36, 24, 30, .42) !important; border-radius: 14px;
+  -webkit-backdrop-filter: blur(12px) saturate(1.1); backdrop-filter: blur(12px) saturate(1.1);
+  box-shadow: inset 0 0 0 1px rgba(240, 143, 174, .22), 0 6px 20px rgba(0, 0, 0, .25);
+}

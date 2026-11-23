@@ -189,6 +189,16 @@ const loadScene = async path => {
   }
 };
 
+// The widget frames (see core.js): each asks once it loads, and all get the widget css again when the theme changes
+let widget = '';
+const give = w => { try { w.postMessage({ [GIVE]: widget }, '*'); } catch {} };
+const giveAll = (w = window) => {
+  for (let i = 0; i < w.frames.length; i++) { give(w.frames[i]); giveAll(w.frames[i]); }
+};
+addEventListener('message', e => {
+  if (e.source && e.source !== window && e.data && typeof e.data === 'object' && e.data[ASK] === true) give(e.source);
+});
+
 let theme, warned = false;
 const tickTheme = async () => {
   let text;
@@ -205,6 +215,8 @@ const tickTheme = async () => {
     const t = JSON.parse(text);
     await loadScene(t.scene);
     apply(t);
+    widget = typeof t.widget === 'string' && safe(t.widget) ? t.widget : '';
+    giveAll();
     console.log('themes-for-claude:', t.id ?? 'Claude\'s own');
   } catch (err) {
     console.warn('themes-for-claude: theme.json is not JSON', err);

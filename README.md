@@ -7,7 +7,9 @@ Themes for Claude Desktop, applied live. Pick one from a strip above the prompt 
 ## Sakura Night
 
 This fork ships one theme: Sakura Night. A dark plum palette over a softened illustration, petals drifting down,
-round corners, a frosted chat box and a gentle bounce. Claude's own colors stay as the way back. It is based on
+round corners, a frosted chat box, commands and code blocks, and a gentle bounce. Claude's generated widgets
+(`show_widget`) get the same plum palette inside their frames (after a restart of Claude Desktop, since the extension
+now also runs in those frames). Claude's own colors stay as the way back. It is based on
 upstream 0.7.3, with the strip and messages in Chinese.
 
 <img src="docs/sakura-night.jpg" width="480" alt="Sakura Night">

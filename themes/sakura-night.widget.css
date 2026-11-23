@@ -1,0 +1,54 @@
+/* Sakura Night inside Claude's generated widgets (show_widget): the --color-* variables they are drawn with, on the
+   dark plum night. The frame itself stays clear (the page frosts it), so cards are mostly opaque to stay readable */
+:root {
+  color-scheme: dark !important;
+  --color-background-primary: rgba(52, 34, 43, .86) !important;
+  --color-background-secondary: rgba(40, 27, 34, .8) !important;
+  --color-background-tertiary: rgba(29, 20, 24, .6) !important;
+  --color-background-inverse: #fbeef2 !important;
+  --color-background-ghost: rgba(52, 34, 43, 0) !important;
+  --color-background-info: rgba(48, 58, 102, .85) !important;
+  --color-background-danger: rgba(110, 36, 58, .85) !important;
+  --color-background-success: rgba(38, 72, 50, .85) !important;
+  --color-background-warning: rgba(92, 64, 28, .85) !important;
+  --color-background-disabled: rgba(52, 34, 43, .5) !important;
+
+  --color-text-primary: #fbeef2 !important;
+  --color-text-secondary: #e6c7d2 !important;
+  --color-text-tertiary: #bf9aa8 !important;
+  --color-text-inverse: #1d1418 !important;
+  --color-text-info: #aab9f2 !important;
+  --color-text-danger: #f7a0b8 !important;
+  --color-text-success: #a2d49c !important;
+  --color-text-warning: #f0c27a !important;
+  --color-text-disabled: rgba(251, 238, 242, .5) !important;
+  --color-text-ghost: rgba(191, 154, 168, .5) !important;
+
+  --color-border-primary: rgba(240, 143, 174, .5) !important;
+  --color-border-secondary: rgba(240, 143, 174, .34) !important;
+  --color-border-tertiary: rgba(240, 143, 174, .2) !important;
+  --color-border-inverse: rgba(29, 20, 24, .2) !important;
+  --color-border-ghost: rgba(240, 143, 174, 0) !important;
+  --color-border-info: #7186d8 !important;
+  --color-border-danger: #e0567f !important;
+  --color-border-success: #6aa86a !important;
+  --color-border-warning: #c99543 !important;
+  --color-border-disabled: rgba(240, 143, 174, .12) !important;
+
+  --color-ring-primary: #f08fae !important;
+  --color-ring-secondary: rgba(240, 143, 174, .5) !important;
+  --color-ring-inverse: #fbeef2 !important;
+
+  --border-radius-md: 10px !important;
+  --border-radius-lg: 14px !important;
+  --border-radius-xl: 18px !important;
+  --shadow-hairline: 0 0 0 1px rgba(240, 143, 174, .18) !important;
+  --shadow-sm: 0 2px 10px rgba(0, 0, 0, .3) !important;
+  --shadow-md: 0 6px 20px rgba(0, 0, 0, .35), 0 0 0 1px rgba(240, 143, 174, .06) !important;
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, .45), 0 0 0 1px rgba(240, 143, 174, .08) !important;
+}
+html, body { background: transparent !important; }
+::selection { background: #7a3a52; color: #fbeef2; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #5c3b48; border-radius: 8px; }

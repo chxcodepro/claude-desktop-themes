@@ -38,6 +38,8 @@ test('every theme has a tile the desktop takes, and Claude writes no colors', as
   expect(look.cell).toBe(14)
   expect(look.veil).toBe(.6)
   expect(JSON.parse(fileOf(THEMES[1]!, '', undefined, 'scenes/snowy.js?v=1')).scene).toBe('scenes/snowy.js?v=1')
+  expect(sakura.widget).toBeUndefined()
+  expect(JSON.parse(fileOf(THEMES[1]!, '', undefined, undefined, ':root{}')).widget).toBe(':root{}')
   expect(sceneModule("SCENES['snowy'] = {}")).toMatch(/^const \{ [^}]*\bsketch\b[^}]*\} = globalThis\.themesForClaude;\nSCENES/)
 })
 

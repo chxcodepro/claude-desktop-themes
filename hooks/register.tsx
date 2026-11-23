@@ -79,9 +79,11 @@ const AGENT_PLIST = `<?xml version="1.0" encoding="UTF-8"?>
 `
 
 // scene: the module path of the person's own scene, which the page imports
-export const fileOf = (t: Theme, css = '', look: Look = LOOK, scene?: string) =>
+// widget: css for the frames Claude draws its generated widgets in (show_widget), which the page's css cannot reach
+export const fileOf = (t: Theme, css = '', look: Look = LOOK, scene?: string, widget = '') =>
   JSON.stringify(t.bg
-    ? { id: t.id, bg: t.bg, text: t.text, accent: t.accent, font: t.font, vars: t.vars, wallpaper: t.wallpaper, scene, ...look, css }
+    ? { id: t.id, bg: t.bg, text: t.text, accent: t.accent, font: t.font, vars: t.vars, wallpaper: t.wallpaper, scene, ...look, css,
+        widget: widget || undefined }
     : {})
 
 const statusOf = (t: Theme | undefined, kind: 'idle' | 'tool' | 'error' | 'done', tool = '') =>
@@ -162,7 +164,10 @@ const withOurs = async ($: EngineInterface, dir: string) => {
   } catch {}
   if (manifest !== fresh) {
     const scripts: { js?: string[]; run_at?: string }[] = (manifest.content_scripts ??= [])
-    if (!scripts.some(s => s.js?.includes('theme.js'))) scripts.push(fresh.content_scripts[0])
+    // (ours is updated in place: an older install's entry lacks all_frames, which the widget frames need)
+    const script = scripts.find(s => s.js?.includes('theme.js'))
+    if (script) Object.assign(script, fresh.content_scripts[0])
+    else scripts.push(fresh.content_scripts[0])
     const war: { resources?: string[] }[] = (manifest.web_accessible_resources ??= [])
     const ours = war.find(w => w.resources?.includes('theme.json'))
     if (ours) ours.resources = [...new Set([...(ours.resources ?? []), ...OURS])]
@@ -275,7 +280,7 @@ const pick = async ($: EngineInterface, t: Theme) => {
   if (own) await $.fs.write(join(dir, 'scenes', `${t.id}.js`), sceneModule(String(await $.fs.read(join(own, `${t.id}.js`)))))
   await $.fs.write(join(dir, 'theme.json'), fileOf(t, `${await css('_base')}\n${wall}\n${t.css ?? (await css(t.id))}`,
     { motion: await read($, motion), speed: await read($, speed), cell: await read($, cell), veil: await read($, veil) },
-    own ? `scenes/${t.id}.js?v=${sceneAt[t.id]}` : undefined))
+    own ? `scenes/${t.id}.js?v=${sceneAt[t.id]}` : undefined, t.css === undefined ? await css(`${t.id}.widget`) : ''))
   await update($, current, () => t.id)
   $.ui.status(statusOf(t, 'idle'))
   $.ui.toast(`主题：${t.name}`)
